@@ -62,7 +62,7 @@ struct FirstView: View {
     // 並び替え処理と　並び替え後の保存
     func replaceRow(_ from: IndexSet, _ to: Int){
         tasksArray.move(fromOffsets: from, toOffset: to)
-        if let encodedArray = try? JSONEncoder().encode(tasksData){
+        if let encodedArray = try? JSONEncoder().encode(tasksArray){
             tasksData = encodedArray //　エンコードできたらAppStrageに渡す
         }
     }
