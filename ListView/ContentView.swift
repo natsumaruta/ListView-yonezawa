@@ -20,7 +20,7 @@ struct FirstView: View {
     @AppStorage("TasksData") private var tasksData = Data()
     @State var tasksArray: [Task] = []
     
-    // FirstVoew生成時に呼ばれる。
+    // FirstView生成時に呼ばれる。
     init() {
         // taskDataをデコードできたら、その値をtasksArrayにわたす
         if let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData){
@@ -49,8 +49,8 @@ struct FirstView: View {
                 .onMove { from, to in
                     replaceRow(from, to)
                 }
-                
-                
+                // 行削除の時に呼び出す処理を指定
+                .onDelete(perform: rowRemove)
             }
             .navigationTitle("Take List") //画面上のタイトル
             // ナビゲーションバーに編集ポタンを追加
@@ -66,7 +66,13 @@ struct FirstView: View {
             tasksData = encodedArray //　エンコードできたらAppStrageに渡す
         }
     }
-    
+    // 行を削除する処理　と　削除後の保存
+    func rowRemove(offsets:IndexSet){
+        tasksArray.remove(atOffsets: offsets)
+        if let encodedArray = try? JSONEncoder().encode(tasksArray){
+            tasksData = encodedArray //　エンコードできたらAppStrageに渡す
+        }
+    }
     
 }
 // タスク入力用のビュー
