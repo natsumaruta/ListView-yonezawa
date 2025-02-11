@@ -68,9 +68,11 @@ struct FirstView: View {
     }
     // 行を削除する処理　と　削除後の保存
     func rowRemove(offsets:IndexSet){
-        tasksArray.remove(atOffsets: offsets)
-        if let encodedArray = try? JSONEncoder().encode(tasksArray){
-            tasksData = encodedArray //　エンコードできたらAppStrageに渡す
+        var array = tasksArray //tasksArrayを一時的に別の変数「array」へ
+        array.remove(atOffsets: offsets) // 一時的な配列「array」からタスクを削除
+        if let encodedArray = try? JSONEncoder().encode(array){
+            UserDefaults.standard.setValue(encodedArray, forKey: "TasksData") // ⑤ UserDefaultsに保存
+            tasksArray = array //　エンコードできたらAppStrageに渡す
         }
     }
     
@@ -107,7 +109,7 @@ struct SecondView: View{
     }
     //　タスクの追加と保存　引数は入力されたタスクの文字
     func addTask(newTask: String){
-        // テキストフィールドに入力しれた値が空白じゃないとき（何か入力されている）ときだけ処理
+        // テキストフィールドに入力した値が空白じゃないとき（何か入力されている）ときだけ処理
         if !newTask.isEmpty{
             let task = Task(taskItem: newTask) //タスクをインスタンス化(実体化)
             var array = tasksArray
